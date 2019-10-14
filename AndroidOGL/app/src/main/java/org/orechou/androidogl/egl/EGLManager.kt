@@ -1,9 +1,12 @@
 package org.orechou.androidogl.egl
 
 import android.opengl.*
+import android.util.Log
 import android.view.Surface
 
 class EGLManager {
+
+    private val TAG = "EGLManager"
 
     private var mEGLDisplay: EGLDisplay
     private var mEGLContext: EGLContext
@@ -14,6 +17,7 @@ class EGLManager {
         mEGLDisplay = getEGLDisplay()
         mEGLConfig = getEGLConfig(mEGLDisplay)
         mEGLContext = getEGLContext(mEGLDisplay, mEGLConfig)
+        Log.d(TAG, "Create EGLManager finished.")
     }
 
     private fun getEGLDisplay(): EGLDisplay {
@@ -38,6 +42,7 @@ class EGLManager {
         val numConfig = intArrayOf(0)
         EGL14.eglChooseConfig(display, configSpec, 0, configs, 0, 1, numConfig, 0)
         if (EGL14.eglGetError() == EGL14.EGL_FALSE || numConfig[0] == 0) {
+            Log.d(TAG, "get display config failed")
             throw Exception("get display config failed")
         }
         return configs[0]!!
@@ -48,13 +53,16 @@ class EGLManager {
         val context = EGL14.eglCreateContext(display, config, EGL14.EGL_NO_CONTEXT, attribs, 0)
         val error = EGL14.eglGetError()
         if (error != EGL14.EGL_SUCCESS) {
+            Log.d(TAG, "fail to get EGLContext error: $error")
             throw Exception("fail to get EGLContext error: $error")
         }
         return context
     }
 
     fun eglMakeCurrent() {
-        EGL14.eglMakeCurrent(mEGLDisplay, mEglSurface, mEglSurface, mEGLContext)
+        if (!EGL14.eglMakeCurrent(mEGLDisplay, mEglSurface, mEglSurface, mEGLContext)) {
+            Log.d(TAG, "EglMakeCurrent failed. " +  EGL14.eglGetError())
+        }
     }
 
     fun eglSwapBuffers() {
