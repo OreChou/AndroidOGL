@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".sticker.StickerActivity">
+
+    <org.orechou.androidogl.view.FixedAspectRatioRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/surface_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_track"
+            android:text="track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></Button>
+
+        <Button
+            android:id="@+id/btn_sticker"
+            android:text="sticker"
+            android:layout_below="@+id/btn_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></Button>
+
+        <Button
+            android:id="@+id/btn_next"
+            android:text="next"
+            android:layout_below="@+id/btn_sticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></Button>
+
+    </org.orechou.androidogl.view.FixedAspectRatioRelativeLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import org.orechou.androidogl.camera.CameraActivity
+import org.orechou.androidogl.sticker.StickerActivity
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.btn_camera -> startActivity(Intent(MainActivity@this, CameraActivity::class.java))
+            R.id.btn_camera -> startActivity(Intent(MainActivity@this, StickerActivity::class.java))
         }
     }
 
