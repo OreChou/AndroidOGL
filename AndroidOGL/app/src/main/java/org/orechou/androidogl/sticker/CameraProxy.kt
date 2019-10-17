@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.SurfaceTexture
 import android.hardware.Camera
+import android.util.Log
 
 class CameraProxy(context: Context) {
 
@@ -64,7 +65,6 @@ class CameraProxy(context: Context) {
                 val psize = pictureSizes[i]
                 if (fs == null && psize.width >= 1280)
                     fs = psize
-
             }
             parameters.setPictureSize(fs!!.width, fs.height)
             if (mContext.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {

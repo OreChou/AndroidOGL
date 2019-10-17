@@ -17,7 +17,7 @@ class GLPoints {
 
 
     private val fragmentShader = "void main() {\n" +
-            "    gl_FragColor = vec4(1.0,0.0,0.0,1.0);\n" +
+            "    gl_FragColor = vec4(0.0,1.0,0.0,1.0);\n" +
             "}"
     private val vertexShader = "attribute vec2 aPosition;\n" +
             "void main() {\n" +

@@ -13,16 +13,8 @@ class GLFrameTexture {
     fun initFrameTexture() {
         GLES20.glGenTextures(1, textures, 0)
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textures[0])
-        GLES20.glTexParameterf(
-            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-            GLES20.GL_TEXTURE_MIN_FILTER,
-            GLES20.GL_NEAREST.toFloat()
-        )
-        GLES20.glTexParameterf(
-            GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-            GLES20.GL_TEXTURE_MAG_FILTER,
-            GLES20.GL_LINEAR.toFloat()
-        )
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
     }
 
@@ -37,7 +29,7 @@ class GLFrameTexture {
         surfaceTexture = null
     }
 
-    fun drawFrameTexture(): Int {
+    fun getFrameTexture(): Int {
         surfaceTexture!!.updateTexImage()
         surfaceTexture!!.getTransformMatrix(mSTMatrix)
         return textures[0]

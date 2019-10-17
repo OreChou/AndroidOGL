@@ -48,7 +48,7 @@ object EGLUtils {
         return meEglContext
     }
 
-    fun swap() {
+    fun swapBuffers() {
         EGL14.eglSwapBuffers(mEglDisplay, mEglSurface)
     }
 

@@ -12,13 +12,14 @@ import android.view.View
 import android.widget.Button
 import org.orechou.androidogl.R
 import org.orechou.androidogl.util.EGLUtils
+// Provide by HyperLandmark
 import zeusees.tracking.FaceTracking
 
 class StickerActivity : AppCompatActivity(), View.OnClickListener {
 
     private val TAG = "StickerActivity"
 
-    private var mMultiTrack106: FaceTracking? = null
+    private var mFaceTracking: FaceTracking? = null
     private var isTracking = false
 
     private var mNv21Data: ByteArray? = null
@@ -48,24 +49,36 @@ class StickerActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun init() {
-        // 1. init model
-        mMultiTrack106 = FaceTracking("/sdcard/ZeuseesFaceTracking/models")
+        initModel()
+        initGL()
+        initCamera()
+        initViewAndListener()
+    }
 
-        mCameraProxy = CameraProxy(this)
-        mNv21Data = ByteArray(mCameraProxy!!.PREVIEW_WIDTH * mCameraProxy!!.PREVIEW_HEIGHT * 2)
+    private fun initModel() {
+        mFaceTracking = FaceTracking("/sdcard/ZeuseesFaceTracking/models")
+    }
+
+    private fun initGL() {
         mFrameTexture = GLFrameTexture()
-        mFrame = GLFrame()
         mPoints = GLPoints()
         mSticker = GLSticker(this, R.drawable.fengj)
+        mFrame = GLFrame()
 
         mRenderThread = HandlerThread("RenderThread")
         mRenderThread!!.start()
         mHandler = Handler(mRenderThread!!.looper)
+    }
 
+    private fun initCamera() {
+        mCameraProxy = CameraProxy(this)
         mCameraProxy!!.setPreviewCallback(mPreviewCallback)
+        mNv21Data = ByteArray(mCameraProxy!!.PREVIEW_WIDTH * mCameraProxy!!.PREVIEW_HEIGHT * 2)
+    }
+
+    private fun initViewAndListener() {
         mSurfaceView = findViewById(R.id.surface_view)
         mSurfaceView!!.holder.addCallback(mSurfaceCallBack)
-
         mBtnTrack = findViewById(R.id.btn_track)
         mBtnSticker = findViewById(R.id.btn_sticker)
         mBtnNext = findViewById(R.id.btn_next)
@@ -111,15 +124,15 @@ class StickerActivity : AppCompatActivity(), View.OnClickListener {
             }
             mHandler!!.post {
                 if (isTracking) {
-                    mMultiTrack106!!.FaceTrackingInit(mNv21Data, mCameraProxy!!.PREVIEW_HEIGHT, mCameraProxy!!.PREVIEW_WIDTH)
+                    mFaceTracking!!.FaceTrackingInit(mNv21Data, mCameraProxy!!.PREVIEW_HEIGHT, mCameraProxy!!.PREVIEW_WIDTH)
                     isTracking = !isTracking
                 } else {
-                    mMultiTrack106!!.Update(mNv21Data, mCameraProxy!!.PREVIEW_HEIGHT, mCameraProxy!!.PREVIEW_WIDTH)
+                    mFaceTracking!!.Update(mNv21Data, mCameraProxy!!.PREVIEW_HEIGHT, mCameraProxy!!.PREVIEW_WIDTH)
                 }
-                val faceActions = mMultiTrack106!!.trackingInfo
+                val faceInfo = mFaceTracking!!.trackingInfo
                 var location: FloatArray? = null
                 var points: FloatArray? = null
-                for (face in faceActions) {
+                for (face in faceInfo) {
                     points = FloatArray(106 * 2)
                     for (i in 0..105) {
 
@@ -129,6 +142,7 @@ class StickerActivity : AppCompatActivity(), View.OnClickListener {
                         points[i * 2] = view2OpenglX(x, mCameraProxy!!.PREVIEW_HEIGHT)
                         points[i * 2 + 1] = view2OpenglY(y, mCameraProxy!!.PREVIEW_WIDTH)
 
+                        // for sticker location
                         if (i == position) {
                             location = FloatArray(8)
                             location[0] = view2OpenglX(x + 20, mCameraProxy!!.PREVIEW_HEIGHT)
@@ -150,13 +164,13 @@ class StickerActivity : AppCompatActivity(), View.OnClickListener {
                     mSticker!!.setPoints(location)
                     tid = mSticker!!.drawFrame()
                 }
-                mFrame!!.drawFrame(tid, mFrameTexture!!.drawFrameTexture(), mFrameTexture!!.getMatrix())
+                mFrame!!.drawFrame(tid, mFrameTexture!!.getFrameTexture(), mFrameTexture!!.getMatrix())
                 if (points != null && isShowTrack) {
                     mPoints!!.setPoints(points!!)
                     mPoints!!.drawPoints()
                 }
 
-                EGLUtils.swap()
+                EGLUtils.swapBuffers()
             }
         }
     }
